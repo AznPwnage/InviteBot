@@ -89,13 +89,13 @@ async def authorize(interaction: discord.Interaction, name: str, clan: Clans, co
     try:
         response = call_oauth_token_api(code, GrantTypes.AuthorizationCode.value)
     except Exception:
-        await interaction.response.send_message('Failed to authorize.')
+        await interaction.response.send_message('Failed to authorize ' + name + ' for ' + clan.name + '.')
         return
 
     oauth_token = convert_response_to_oauth_token(response.json())
     save_oauth_token(clan, oauth_token)
 
-    await interaction.response.send_message('Authorized!')
+    await interaction.response.send_message(name + ' authorized for ' + clan.name + '.')
 
 
 @client.tree.command()
@@ -111,22 +111,22 @@ async def invite(interaction: discord.Interaction, bungie_name: str, membership_
     try:
         oauth_token = get_oauth_token(clan)
     except Exception:
-        await interaction.response.send_message('Unable to fetch token, please reauthenticate.')
+        await interaction.response.send_message('Unable to fetch token for ' + clan.name + ' please reauthenticate.')
         return
 
     try:
         membership_id = get_membership_id(bungie_name, membership_type.value)
     except Exception:
-        await interaction.response.send_message('Unable to find membership id.')
+        await interaction.response.send_message('Unable to find membership id for ' + bungie_name + '.')
         return
 
     try:
         send_invite(membership_type.value, membership_id, clan.value, oauth_token.access_token)
     except Exception:
-        await interaction.response.send_message('Unable to send clan invite.')
+        await interaction.response.send_message('Unable to send invite to ' + bungie_name + ' for ' + clan.name + '.')
         return
 
-    await interaction.response.send_message('Invite sent!')
+    await interaction.response.send_message(bungie_name + ' invited to ' + clan.name + '.')
 
 
 @client.tree.command()
