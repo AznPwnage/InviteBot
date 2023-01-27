@@ -19,8 +19,7 @@ class InviteCog(commands.Cog):
     @app_commands.describe(
         bungie_name="Bungie Name of the user to invite (include the # and numbers)",
         membership_type="Platform",
-        clan="Name of clan"
-    )
+        clan="Name of clan")
     @app_commands.rename(
         bungie_name='bungie-name',
         membership_type='platform')
@@ -30,25 +29,26 @@ class InviteCog(commands.Cog):
                      membership_type: MembershipTypes,
                      clan: Clans):
         """Invite a user to the clan"""
+        await interaction.response.defer()
         try:
             oauth_token = get_oauth_token(clan)
         except Exception:
-            await interaction.response.send_message('Unable to fetch token for ' + clan.name + ' please reauthenticate.')
+            await interaction.followup.send('Unable to fetch token for ' + clan.name + ' please reauthenticate.')
             return
 
         try:
             membership_id = get_membership_id(bungie_name, membership_type.value)
         except Exception:
-            await interaction.response.send_message('Unable to find membership id for ' + bungie_name + '.')
+            await interaction.followup.send('Unable to find membership id for ' + bungie_name + '.')
             return
 
         try:
             send_invite(membership_type.value, membership_id, clan.value, oauth_token.access_token)
         except Exception:
-            await interaction.response.send_message('Unable to send invite to ' + bungie_name + ' for ' + clan.name + '.')
+            await interaction.followup.send('Unable to send invite to ' + bungie_name + ' for ' + clan.name + '.')
             return
 
-        await interaction.response.send_message(bungie_name + ' invited to ' + clan.name + '.')
+        await interaction.followup.send(bungie_name + ' invited to ' + clan.name + '.')
 
 
 async def setup(bot):
