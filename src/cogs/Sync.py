@@ -14,7 +14,7 @@ class SyncCog(commands.Cog):
     @commands.guild_only()
     async def sync(self,
                    interaction: discord.Interaction,
-                   guild_id: int):
+                   guild_id: str):
         if interaction.channel_id == DEV_CHANNEL_ID:
             tree = self.bot.tree
             guild = discord.Object(id=guild_id)
