@@ -12,12 +12,19 @@ class AuthorizeCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command()
+    @app_commands.command(
+        name="authorize",
+        description="Authorize the bot to use your Bungie account")
+    @app_commands.describe(
+        name="Name of account",
+        clan="Name of clan",
+        code="Code copied from URL"
+    )
     async def authorize(self,
                         interaction: discord.Interaction,
-                        name: str = commands.param(description='Name of account'),
-                        clan: Clans = commands.param(description='Name of clan'),
-                        code: str = commands.param(description='Code copied from URL')):
+                        name: str,
+                        clan: Clans,
+                        code: str):
         """Authorize the bot to use your Bungie account"""
 
         try:
@@ -32,5 +39,5 @@ class AuthorizeCog(commands.Cog):
         await interaction.response.send_message(name + ' authorized for ' + clan.name + '.')
 
 
-def setup(bot):
-    bot.add_cog(AuthorizeCog(bot))
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(AuthorizeCog(bot))

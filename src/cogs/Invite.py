@@ -13,14 +13,22 @@ class InviteCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @app_commands.command()
-    @app_commands.rename(bungie_name='bungie-name')
-    @app_commands.rename(membership_type='platform')
+    @app_commands.command(
+        name="invite",
+        description="Invite a user to the clan")
+    @app_commands.describe(
+        bungie_name="Bungie Name of the user to invite (include the # and numbers)",
+        membership_type="Platform",
+        clan="Name of clan"
+    )
+    @app_commands.rename(
+        bungie_name='bungie-name',
+        membership_type='platform')
     async def invite(self,
                      interaction: discord.Interaction,
-                     bungie_name: str = commands.param(description='Bungie Name of the user to invite (include the # and numbers)'),
-                     membership_type: MembershipTypes = commands.param(description='Platform'),
-                     clan: Clans = commands.param(description='Name of clan')):
+                     bungie_name: str,
+                     membership_type: MembershipTypes,
+                     clan: Clans):
         """Invite a user to the clan"""
         try:
             oauth_token = get_oauth_token(clan)
@@ -43,5 +51,5 @@ class InviteCog(commands.Cog):
         await interaction.response.send_message(bungie_name + ' invited to ' + clan.name + '.')
 
 
-def setup(bot):
-    bot.add_cog(InviteCog(bot))
+async def setup(bot):
+    await bot.add_cog(InviteCog(bot))
