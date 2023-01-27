@@ -13,10 +13,11 @@ class SyncCog(commands.Cog):
     @commands.is_owner()
     @commands.guild_only()
     async def sync(self,
-                   interaction: discord.Interaction):
+                   interaction: discord.Interaction,
+                   guild_id: int):
         if interaction.channel_id == DEV_CHANNEL_ID:
             tree = self.bot.tree
-            guild = interaction.guild
+            guild = discord.Object(id=guild_id)
 
             await interaction.response.defer()
 
