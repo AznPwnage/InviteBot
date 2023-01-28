@@ -101,8 +101,6 @@ class InviteContextCog(commands.Cog):
         return platform, division
 
     def validate_platform(self, platform):
-        print(platform)
-        print(MembershipTypes.member_names_)
         return platform in MembershipTypes.member_names_
 
     def validate_division(self, division):
