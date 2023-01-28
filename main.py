@@ -34,7 +34,7 @@ class CustomBot(commands.Bot):
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
-bot = CustomBot(activity=discord.Game(name='Destiny 3'), command_prefix='?', intents=intents)
+bot = CustomBot(activity=discord.Game(name='Destiny 3'), command_prefix='>?', intents=intents)
 
 
 @bot.event
