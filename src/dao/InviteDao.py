@@ -10,7 +10,6 @@ def send_invite(membership_type: str, membership_id: str, clan_id: str, access_t
     body = '{}'
 
     response = requests.post(url, headers=headers, data=body)
-    print(response.status_code)
     if response.status_code != 200:
         raise Exception
     return

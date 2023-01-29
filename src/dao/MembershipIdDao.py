@@ -16,7 +16,7 @@ def get_membership_id_and_membership_type(bungie_name: str):
     if response.status_code != 200:
         raise Exception
 
-    return response.json()['Response'][0]['membershipId'], response.json()['Response'][0]['membershipType']
+    return response.json()['Response'][0]['membershipId'], str(response.json()['Response'][0]['membershipType'])
 
 
 def get_display_name_and_code(bungie_name: str):
