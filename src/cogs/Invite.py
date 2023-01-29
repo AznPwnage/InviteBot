@@ -3,6 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from src.business.OAuthTokenHandler import get_oauth_token
+from src.constants.Constants import HASH_DELIMITER
 from src.dao.InviteDao import send_invite
 from src.dao.MembershipIdDao import get_membership_id
 from src.enums.Clans import Clans
@@ -48,7 +49,28 @@ class InviteCog(commands.Cog):
             await interaction.followup.send('Unable to send invite to ' + bungie_name + ' for ' + clan.name + '.')
             return
 
+        try:
+            member = self.get_member(interaction, bungie_name)
+            await interaction.followup.send(member.mention + ' invited to ' + clan.name + '. Welcome to the clan!')
+            return
+        except Exception:
+            print(interaction.followup.send('Unable to find user by server nickname.'))
+
         await interaction.followup.send(bungie_name + ' invited to ' + clan.name + '.')
+        return
+
+    def separate_name_and_discriminator_from_bungie_name(self, bungie_name):
+        splits = bungie_name.split(HASH_DELIMITER)
+        return splits[0], splits[1]
+
+    def get_guild(self, interaction: discord.Interaction):
+        guild_id = interaction.guild.id
+        return self.bot.get_guild(guild_id)
+
+    def get_member(self, interaction: discord.Interaction, bungie_name: str):
+        guild = self.get_guild(interaction)
+        name, discriminator = self.separate_name_and_discriminator_from_bungie_name(bungie_name)
+        return discord.utils.get(guild.members, name=name, discriminator=discriminator)
 
 
 async def setup(bot):

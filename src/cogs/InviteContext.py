@@ -88,7 +88,7 @@ class InviteContextCog(commands.Cog):
             await interaction.followup.send('Unable to send invite to ' + bungie_name + ' for ' + clan.name + '.')
             return
 
-        await interaction.followup.send(bungie_name + ' invited to ' + clan.name + '.')
+        await interaction.followup.send(member.mention + ' invited to ' + clan.name + '. Welcome to the clan!')
         return
 
     def is_registered_user(self, roles: List[Role]):
