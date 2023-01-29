@@ -3,6 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from src.constants.Constants import DEV_CHANNEL_ID
+from src.utils.GuildUtils import get_guild_by_id
 
 
 class SyncCog(commands.Cog):
@@ -23,6 +24,12 @@ class SyncCog(commands.Cog):
 
             tree.copy_global_to(guild=guild)
             await tree.sync(guild=guild)
+
+            with open('resources/obws_clear.png', 'rb') as image:
+                await self.bot.user.edit(avatar=image.read())
+
+            guild = get_guild_by_id(self.bot, int(guild_id))
+            await guild.get_member(self.bot.user.id).edit(nick="The Obsidian Watcher")
             await interaction.followup.send('Synced.')
         else:
             await interaction.response.send_message('Wrong channel.')

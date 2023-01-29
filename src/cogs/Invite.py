@@ -7,6 +7,7 @@ from src.constants.Constants import HASH_DELIMITER
 from src.dao.InviteDao import send_invite
 from src.dao.MembershipIdDao import get_membership_id_and_membership_type
 from src.enums.Clans import Clans
+from src.utils.GuildUtils import get_guild
 
 
 class InviteCog(commands.Cog):
@@ -59,12 +60,8 @@ class InviteCog(commands.Cog):
         splits = bungie_name.split(HASH_DELIMITER)
         return splits[0], splits[1]
 
-    def get_guild(self, interaction: discord.Interaction):
-        guild_id = interaction.guild.id
-        return self.bot.get_guild(guild_id)
-
     def get_member(self, interaction: discord.Interaction, bungie_name: str):
-        guild = self.get_guild(interaction)
+        guild = get_guild(self.bot, interaction)
         name, discriminator = self.separate_name_and_discriminator_from_bungie_name(bungie_name)
         return discord.utils.get(guild.members, name=name, discriminator=discriminator)
 
