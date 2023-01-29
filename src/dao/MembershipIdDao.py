@@ -5,10 +5,10 @@ import requests
 from src.dao.ConfigDao import get_api_key
 
 
-def get_membership_id(bungie_name: str, membership_type: str):
+def get_membership_id_and_membership_type(bungie_name: str):
     display_name, display_name_code = get_display_name_and_code(bungie_name)
 
-    url = 'https://www.bungie.net/platform/destiny2/searchdestinyplayerbybungiename/' + membership_type
+    url = 'https://www.bungie.net/platform/destiny2/searchdestinyplayerbybungiename/-1'
     headers = {'content-type': 'application/json', 'x-api-key': get_api_key()}
     body = json.dumps({'displayName': display_name, 'displayNameCode': display_name_code})
 
@@ -16,7 +16,7 @@ def get_membership_id(bungie_name: str, membership_type: str):
     if response.status_code != 200:
         raise Exception
 
-    return response.json()['Response'][0]['membershipId']
+    return response.json()['Response'][0]['membershipId'], response.json()['Response'][0]['membershipType']
 
 
 def get_display_name_and_code(bungie_name: str):

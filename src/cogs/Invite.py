@@ -5,9 +5,8 @@ from discord.ext import commands
 from src.business.OAuthTokenHandler import get_oauth_token
 from src.constants.Constants import HASH_DELIMITER
 from src.dao.InviteDao import send_invite
-from src.dao.MembershipIdDao import get_membership_id
+from src.dao.MembershipIdDao import get_membership_id_and_membership_type
 from src.enums.Clans import Clans
-from src.enums.MembershipTypes import MembershipTypes
 
 
 class InviteCog(commands.Cog):
@@ -19,15 +18,12 @@ class InviteCog(commands.Cog):
         description="Invite a user to the clan")
     @app_commands.describe(
         bungie_name="Bungie Name of the user to invite (include the # and numbers)",
-        membership_type="Platform",
         clan="Name of clan")
     @app_commands.rename(
-        bungie_name='bungie-name',
-        membership_type='platform')
+        bungie_name='bungie-name')
     async def invite(self,
                      interaction: discord.Interaction,
                      bungie_name: str,
-                     membership_type: MembershipTypes,
                      clan: Clans):
         """Invite a user to the clan"""
         await interaction.response.defer()
@@ -38,13 +34,13 @@ class InviteCog(commands.Cog):
             return
 
         try:
-            membership_id = get_membership_id(bungie_name, membership_type.value)
+            membership_id, membership_type = get_membership_id_and_membership_type(bungie_name)
         except Exception:
-            await interaction.followup.send('Unable to find membership id for ' + bungie_name + '.')
+            await interaction.followup.send('Unable to find membership id & membership type for ' + bungie_name + '.')
             return
 
         try:
-            send_invite(membership_type.value, membership_id, clan.value, oauth_token.access_token)
+            send_invite(membership_type, membership_id, clan.value, oauth_token.access_token)
         except Exception:
             await interaction.followup.send('Unable to send invite to ' + bungie_name + ' for ' + clan.name + '.')
             return

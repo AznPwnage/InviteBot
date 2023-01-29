@@ -7,7 +7,7 @@ from discord.ext import commands
 from src.business.OAuthTokenHandler import get_oauth_token
 from src.constants.Constants import REGISTERED_USER_ROLE_ID, COMMA_DELIMITER
 from src.dao.InviteDao import send_invite
-from src.dao.MembershipIdDao import get_membership_id
+from src.dao.MembershipIdDao import get_membership_id_and_membership_type
 from src.enums.Clans import Clans
 from src.enums.MembershipTypes import MembershipTypes
 
@@ -37,17 +37,9 @@ class InviteContextCog(commands.Cog):
             return
 
         try:
-            platform, division = self.extract_platform_and_division(message)
+            division = self.extract_division(message)
         except Exception:
-            await interaction.followup.send('Incorrect message format. Please use `<platform>,<division>`.')
-            return
-
-        try:
-            if not self.validate_platform(platform):
-                await interaction.followup.send('Platform is not valid.')
-                return
-        except Exception:
-            await interaction.followup.send('Error while validating platform.')
+            await interaction.followup.send('No valid division name found in the message.')
             return
 
         try:
@@ -66,7 +58,6 @@ class InviteContextCog(commands.Cog):
             await interaction.followup.send('Error while validating bungie name.')
             return
 
-        membership_type = MembershipTypes[platform]
         clan = Clans[division]
         bungie_name = member.nick
 
@@ -77,13 +68,13 @@ class InviteContextCog(commands.Cog):
             return
 
         try:
-            membership_id = get_membership_id(bungie_name, membership_type.value)
+            membership_id, membership_type = get_membership_id_and_membership_type(bungie_name)
         except Exception:
             await interaction.followup.send('Unable to find membership id for ' + bungie_name + '.')
             return
 
         try:
-            send_invite(membership_type.value, membership_id, clan.value, oauth_token.access_token)
+            send_invite(membership_type, membership_id, clan.value, oauth_token.access_token)
         except Exception:
             await interaction.followup.send('Unable to send invite to ' + bungie_name + ' for ' + clan.name + '.')
             return
@@ -94,11 +85,11 @@ class InviteContextCog(commands.Cog):
     def is_registered_user(self, roles: List[Role]):
         return any(role.id == REGISTERED_USER_ROLE_ID for role in roles)
 
-    def extract_platform_and_division(self, message):
-        message_parts = message.content.split(COMMA_DELIMITER)
-        platform = message_parts[0].lower()
-        division = message_parts[1].lower()
-        return platform, division
+    def extract_division(self, message):
+        for division_name in Clans.member_names_:
+            if division_name in message.content.lower():
+                return division_name
+        raise Exception
 
     def validate_platform(self, platform):
         return platform in MembershipTypes.member_names_
