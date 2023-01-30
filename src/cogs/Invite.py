@@ -1,9 +1,10 @@
+from typing import List
+
 import discord
 from discord import app_commands
 from discord.ext import commands
 
 from src.business.OAuthTokenHandler import get_oauth_token
-from src.constants.Constants import HASH_DELIMITER
 from src.dao.InviteDao import send_invite
 from src.dao.MembershipIdDao import get_membership_id_and_membership_type
 from src.enums.Clans import Clans
@@ -14,6 +15,13 @@ class InviteCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    async def bungie_name_autocomplete(self, interaction: discord.Interaction, current: str) -> List[app_commands.Choice[str]]:
+        guild_member_names = self.get_guild_member_names(interaction)
+        return [
+            app_commands.Choice(name=bungie_name, value=bungie_name)
+            for bungie_name in guild_member_names if current.lower() in bungie_name.lower()
+        ]
+
     @app_commands.command(
         name="invite",
         description="Invite a user to the clan")
@@ -22,6 +30,7 @@ class InviteCog(commands.Cog):
         clan="Name of clan")
     @app_commands.rename(
         bungie_name='bungie-name')
+    @app_commands.autocomplete(bungie_name=bungie_name_autocomplete)
     async def invite(self,
                      interaction: discord.Interaction,
                      bungie_name: str,
@@ -56,14 +65,17 @@ class InviteCog(commands.Cog):
         await interaction.followup.send(bungie_name + ' invited to ' + clan.name + '.')
         return
 
-    def separate_name_and_discriminator_from_bungie_name(self, bungie_name):
-        splits = bungie_name.split(HASH_DELIMITER)
-        return splits[0], splits[1]
-
     def get_member(self, interaction: discord.Interaction, bungie_name: str):
         guild = get_guild(self.bot, interaction)
-        name, discriminator = self.separate_name_and_discriminator_from_bungie_name(bungie_name)
-        return discord.utils.get(guild.members, name=name, discriminator=discriminator)
+        return discord.utils.get(guild.members, nick=bungie_name)
+
+    def get_guild_member_names(self, interaction: discord.Interaction):
+        guild = get_guild(self.bot, interaction)
+        guild_member_names = []
+        for member in guild.members:
+            if member.nick is not None:
+                guild_member_names.append(member.nick)
+        return guild_member_names
 
 
 async def setup(bot):

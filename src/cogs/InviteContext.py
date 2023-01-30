@@ -5,11 +5,10 @@ from discord import app_commands, Role
 from discord.ext import commands
 
 from src.business.OAuthTokenHandler import get_oauth_token
-from src.constants.Constants import REGISTERED_USER_ROLE_ID, COMMA_DELIMITER
+from src.constants.Constants import REGISTERED_USER_ROLE_ID
 from src.dao.InviteDao import send_invite
 from src.dao.MembershipIdDao import get_membership_id_and_membership_type
 from src.enums.Clans import Clans
-from src.enums.MembershipTypes import MembershipTypes
 
 
 class InviteContextCog(commands.Cog):
