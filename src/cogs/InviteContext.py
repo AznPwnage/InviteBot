@@ -66,7 +66,7 @@ class InviteContextCog(commands.Cog):
             return
 
         try:
-            send_invite(membership_type, membership_id, clan.value, oauth_token.access_token)
+            send_invite(membership_type, membership_id, clan.value.group_id, oauth_token.access_token)
         except Exception:
             await interaction.followup.send('Unable to send invite to ' + bungie_name + ' for ' + clan.name + '.')
             return
