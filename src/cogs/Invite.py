@@ -51,7 +51,7 @@ class InviteCog(commands.Cog):
             await interaction.followup.send(member.mention + ' invited to ' + clan.name + '. Welcome to the clan!')
             return
         except Exception:
-            print(interaction.followup.send('Unable to find user by server nickname.'))
+            print('Unable to find user by server nickname.')
 
         await interaction.followup.send(bungie_name + ' invited to ' + clan.name + '.')
         return

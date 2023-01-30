@@ -43,14 +43,6 @@ class InviteContextCog(commands.Cog):
             return
 
         try:
-            if not self.validate_division(division):
-                await interaction.followup.send('Division is not valid.')
-                return
-        except Exception:
-            await interaction.followup.send('Error while validating division.')
-            return
-
-        try:
             if not self.validate_bungie_name(member.nick):
                 await interaction.followup.send('Invalid nickname for user, please set server nickname to match bungie name.')
                 return
@@ -86,16 +78,10 @@ class InviteContextCog(commands.Cog):
         return any(role.id == REGISTERED_USER_ROLE_ID for role in roles)
 
     def extract_division(self, message):
-        for division_name in Clans.member_names_:
-            if division_name in message.content.lower():
+        for division_name in Clans.get_clan_names():
+            if division_name.lower() in message.content.lower():
                 return division_name
         raise Exception
-
-    def validate_platform(self, platform):
-        return platform in MembershipTypes.member_names_
-
-    def validate_division(self, division):
-        return division in Clans.member_names_
 
     def validate_bungie_name(self, bungie_name):
         return bungie_name is not None
