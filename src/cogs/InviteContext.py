@@ -78,7 +78,7 @@ class InviteContextCog(commands.Cog):
 
     def extract_division(self, message):
         for division_name in Clans.get_clan_names():
-            if division_name.lower() in message.content.lower():
+            if division_name in message.content.lower():
                 return division_name
         raise Exception
 

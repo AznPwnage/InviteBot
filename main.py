@@ -14,7 +14,8 @@ dev_guild = discord.Object(id=889991299904716830)  # replace with your guild id
 initial_extensions = ['src.cogs.Authorize',
                       'src.cogs.Invite',
                       'src.cogs.InviteContext',
-                      'src.cogs.Sync']
+                      'src.cogs.Sync',
+                      'src.cogs.Info']
 
 
 class CustomBot(commands.Bot):
