@@ -15,4 +15,4 @@ class ClanInfo:
         return 'Open' if self.is_clan_open() else 'Closed'
 
     def pretty_print(self):
-        return '**' + self.name.capitalize() + '** (' + ('<:greenTick:596576670815879169>' if self.is_clan_open() else '<:redTick:596576672149667840>') + '): ' + str(self.member_count)
+        return '**' + self.name.capitalize() + '** (' + ('<:Greentick:1069642256103002214>' if self.is_clan_open() else '<:Redcross:1069642390052278292>') + '): ' + str(self.member_count)
