@@ -5,7 +5,7 @@ from discord import app_commands, Role
 from discord.ext import commands
 
 from src.business.OAuthTokenHandler import get_oauth_token
-from src.constants.Constants import REGISTERED_USER_ROLE_ID
+from src.constants.Constants import REGISTERED_USER_ROLE_ID, BETA_GUILD_ID, DEV_GUILD_ID
 from src.dao.InviteDao import send_invite
 from src.dao.MembershipIdDao import get_membership_id_and_membership_type
 from src.enums.Clans import Clans
@@ -27,13 +27,14 @@ class InviteContextCog(commands.Cog):
         await interaction.response.defer()
         member = message.author
 
-        try:
-            if not self.is_registered_user(member.roles):
-                await interaction.followup.send('User is not registered to Charlemagne.')
+        if self.is_prod_guild(interaction.guild_id):
+            try:
+                if not self.is_registered_user(member.roles):
+                    await interaction.followup.send('User is not registered to Charlemagne.')
+                    return
+            except Exception:
+                await interaction.followup.send('Issue with fetching roles for user.')
                 return
-        except Exception:
-            await interaction.followup.send('Issue with fetching roles for user.')
-            return
 
         try:
             division = self.extract_division(message)
@@ -84,6 +85,9 @@ class InviteContextCog(commands.Cog):
 
     def validate_bungie_name(self, bungie_name):
         return bungie_name is not None
+
+    def is_prod_guild(self, guild_id):
+        return guild_id != BETA_GUILD_ID and guild_id != DEV_GUILD_ID
 
 
 async def setup(bot):
