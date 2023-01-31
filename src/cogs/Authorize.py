@@ -2,8 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from src.business.OAuthTokenHandler import convert_response_to_oauth_token, save_oauth_token
-from src.dao.OAuthTokenDao import call_oauth_token_api
+from src.dao.OAuthTokenDao import call_oauth_token_api, convert_response_to_oauth_token, save_oauth_token
 from src.enums.Clans import Clans
 from src.enums.GrantTypes import GrantTypes
 

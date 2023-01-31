@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from src.business.InfoHandler import get_divisions_info_by_region
+from src.business.InfoHandler import get_divisions_info_by_region_value
 from src.dao.ClanInfoDao import get_clan_info
 
 
@@ -19,7 +19,7 @@ class InfoCog(commands.Cog):
         await interaction.response.defer()
 
         clan_info_dict = get_clan_info()
-        divisions_by_region = get_divisions_info_by_region(clan_info_dict)
+        divisions_by_region = get_divisions_info_by_region_value(clan_info_dict)
 
         embed = discord.Embed(title="Obsidian Watchers <:OBWS_Clan:885217965316898827>: Divisions Info", color=0x68469c)
         for k, v in divisions_by_region.items():
