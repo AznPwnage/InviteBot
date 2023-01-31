@@ -4,10 +4,10 @@ import discord
 from discord import app_commands, Role
 from discord.ext import commands
 
-from src.business.OAuthTokenHandler import get_oauth_token
 from src.constants.Constants import REGISTERED_USER_ROLE_ID, BETA_GUILD_ID, DEV_GUILD_ID
 from src.dao.InviteDao import send_invite
 from src.dao.MembershipIdDao import get_membership_id_and_membership_type
+from src.dao.OAuthTokenDao import get_oauth_token
 from src.enums.Clans import Clans
 
 

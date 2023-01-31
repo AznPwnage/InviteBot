@@ -4,9 +4,9 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from src.business.OAuthTokenHandler import get_oauth_token
 from src.dao.InviteDao import send_invite
 from src.dao.MembershipIdDao import get_membership_id_and_membership_type
+from src.dao.OAuthTokenDao import get_oauth_token
 from src.enums.Clans import Clans
 from src.utils.GuildUtils import get_guild
 

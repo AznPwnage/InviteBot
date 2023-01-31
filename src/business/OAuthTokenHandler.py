@@ -1,22 +1,9 @@
-import pickle
 import time
 
 from src.dao.OAuthTokenDao import call_oauth_token_api
 from src.enums.Clans import Clans
 from src.enums.GrantTypes import GrantTypes
 from src.types.OAuthToken import OAuthToken
-
-
-def get_oauth_token(clan: Clans):
-    with open('src/tokens/' + clan.name, 'rb') as token_file:
-        oauth_token = pickle.load(token_file)
-
-    return handle_oauth_token(clan, oauth_token)
-
-
-def save_oauth_token(clan: Clans, oauth_token: OAuthToken):
-    with open('src/tokens/' + clan.name, 'wb') as token_file:
-        pickle.dump(oauth_token, token_file)
 
 
 def handle_oauth_token(clan: Clans, oauth_token: OAuthToken):
