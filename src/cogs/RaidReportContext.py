@@ -4,6 +4,7 @@ from discord.ext import commands
 
 from src.dao.MembershipIdDao import get_membership_id_and_membership_type
 from src.enums.MembershipTypes import MembershipTypes
+from src.types.MembershipType import MembershipType
 from src.utils.GuildUtils import validate_user_roles, validate_bungie_name
 
 
