@@ -1,6 +1,6 @@
 import time
 
-from src.dao.OAuthTokenDao import call_oauth_token_api
+from src.dao.OAuthTokenDao import call_oauth_token_api, save_oauth_token
 from src.enums.Clans import Clans
 from src.enums.GrantTypes import GrantTypes
 from src.types.OAuthToken import OAuthToken
