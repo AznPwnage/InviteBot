@@ -41,7 +41,7 @@ class InviteContextCog(commands.Cog):
         try:
             division = self.extract_division(message)
         except Exception:
-            await interaction.followup.send('No valid division name found in the message.')
+            await interaction.followup.send('No valid division or region name found in the message.')
             return
 
         try:
