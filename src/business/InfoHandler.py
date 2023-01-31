@@ -23,10 +23,12 @@ def get_divisions_by_region_name(clan_info_dict):
     return divisions_by_region
 
 
-def get_smallest_division_group_id_by_region_name(region_name):
+def get_smallest_division_name_by_region_name(region_name):
     clan_info_dict = get_clan_info()
     divisions_by_region = get_divisions_by_region_name(clan_info_dict)
 
-    smallest_division_name = divisions_by_region.get(region_name).sort(key=lambda x: x.member_count).name
+    divisions_in_region = divisions_by_region.get(region_name)
+    divisions_in_region.sort(key=lambda x: x.member_count)
+    smallest_division_name = divisions_in_region[0].name
 
-    return Clans[smallest_division_name].value.group_id
+    return smallest_division_name

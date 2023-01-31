@@ -4,7 +4,7 @@ import discord
 from discord import app_commands, Role
 from discord.ext import commands
 
-from src.business.InfoHandler import get_smallest_division_group_id_by_region_name
+from src.business.InfoHandler import get_smallest_division_name_by_region_name
 from src.constants.Constants import REGISTERED_USER_ROLE_ID, BETA_GUILD_ID, DEV_GUILD_ID
 from src.dao.InviteDao import send_invite
 from src.dao.MembershipIdDao import get_membership_id_and_membership_type
@@ -85,7 +85,7 @@ class InviteContextCog(commands.Cog):
                 return division_name
         for region_name in Region.get_region_names():
             if region_name.lower() in message.content.lower():
-                return get_smallest_division_group_id_by_region_name(region_name)
+                return get_smallest_division_name_by_region_name(region_name)
         raise Exception
 
     def validate_bungie_name(self, bungie_name):
