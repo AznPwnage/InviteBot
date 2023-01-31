@@ -35,13 +35,14 @@ class RaidReportContextCog(commands.Cog):
         await interaction.followup.send(self.construct_raid_report_link(membership_id, membership_type))
 
     def construct_raid_report_link(self, membership_id, api_membership_type):
-        rr_membership_type_code = self.get_rr_membership_type_code(api_membership_type)
-        return 'https://www.raid.report/' + rr_membership_type_code + '/' + membership_id
+        rr_membership_type_name = self.get_rr_membership_type_name(api_membership_type)
+        return 'https://www.raid.report/' + rr_membership_type_name + '/' + membership_id
 
-    def get_rr_membership_type_code(self, api_membership_type):
+    def get_rr_membership_type_name(self, api_membership_type):
         for membership_type in MembershipTypes:
             if membership_type.value.code == api_membership_type:
-                return membership_type.value.rr_code
+                return membership_type.value.rr_name
+        return MembershipType.STEAM.value.rr_name
 
 
 async def setup(bot):
