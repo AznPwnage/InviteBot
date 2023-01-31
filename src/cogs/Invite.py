@@ -36,7 +36,7 @@ class InviteCog(commands.Cog):
                      bungie_name: str,
                      clan: Clans):
         """Invite a user to the clan"""
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True)
         try:
             oauth_token = get_oauth_token(clan)
         except Exception:
@@ -57,12 +57,14 @@ class InviteCog(commands.Cog):
 
         try:
             member = self.get_member(interaction, bungie_name)
-            await interaction.followup.send(member.mention + ' invited to ' + clan.name + '. Welcome to the clan!')
+            await interaction.followup.send('Invite successful', ephemeral=True)
+            await interaction.channel.send(member.mention + ' invited to ' + clan.name + '. Welcome to the clan!')
             return
         except Exception:
             print('Unable to find user by server nickname.')
 
-        await interaction.followup.send(bungie_name + ' invited to ' + clan.name + '.')
+        await interaction.followup.send('Invite successful', ephemeral=True)
+        await interaction.channel.send(bungie_name + ' invited to ' + clan.name + '.')
         return
 
     def get_member(self, interaction: discord.Interaction, bungie_name: str):
