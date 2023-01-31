@@ -26,7 +26,7 @@ class InviteContextCog(commands.Cog):
                              interaction: discord.Interaction,
                              message: discord.Message):
         """Invite a user to the clan"""
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True)
         member = message.author
 
         if self.is_prod_guild(interaction.guild_id):
