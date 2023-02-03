@@ -61,7 +61,7 @@ class InviteContextCog(commands.Cog):
             return
 
         await interaction.followup.send('Invite successful', ephemeral=True)
-        await interaction.channel.send(member.mention + ' invited to ' + clan.name.capitalize() + ' by ' + interaction.user.name + '. Welcome to the clan!')
+        await interaction.channel.send(member.mention + ' invited to ' + clan.name.capitalize() + ' by ' + interaction.user.display_name + '. Welcome to the clan!')
         return
 
     def extract_division(self, message):
