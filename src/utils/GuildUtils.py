@@ -35,6 +35,11 @@ def is_registered_user(roles: List[discord.Role]):
     return any(role.id == REGISTERED_USER_ROLE_ID for role in roles)
 
 
+def get_member(bot: commands.bot, interaction: discord.Interaction, bungie_name: str):
+    guild = get_guild(bot, interaction)
+    return discord.utils.get(guild.members, nick=bungie_name)
+
+
 async def validate_bungie_name(interaction, bungie_name):
     try:
         if bungie_name is None:

@@ -8,7 +8,7 @@ from src.dao.InviteDao import send_invite
 from src.dao.MembershipIdDao import get_membership_id_and_membership_type
 from src.dao.OAuthTokenDao import get_oauth_token
 from src.enums.Clans import Clans
-from src.utils.GuildUtils import get_guild
+from src.utils.GuildUtils import get_guild, get_member
 
 
 class InviteCog(commands.Cog):
@@ -56,7 +56,7 @@ class InviteCog(commands.Cog):
             return
 
         try:
-            member = self.get_member(interaction, bungie_name)
+            member = get_member(self.bot, interaction, bungie_name)
             await interaction.followup.send('Invite successful', ephemeral=True)
             await interaction.channel.send(member.mention + ' invited to ' + clan.name.capitalize() + ' by ' + interaction.user.display_name + '. Welcome to the clan!')
             return
@@ -66,10 +66,6 @@ class InviteCog(commands.Cog):
         await interaction.followup.send('Invite successful', ephemeral=True)
         await interaction.channel.send(bungie_name + ' invited to ' + clan.name.capitalize() + ' by ' + interaction.user.display_name + '. Welcome to the clan!')
         return
-
-    def get_member(self, interaction: discord.Interaction, bungie_name: str):
-        guild = get_guild(self.bot, interaction)
-        return discord.utils.get(guild.members, nick=bungie_name)
 
     def get_guild_member_names(self, interaction: discord.Interaction):
         guild = get_guild(self.bot, interaction)

@@ -16,7 +16,8 @@ initial_extensions = ['src.cogs.Authorize',
                       'src.cogs.InviteContext',
                       'src.cogs.Sync',
                       'src.cogs.Info',
-                      'src.cogs.RaidReportContext']
+                      'src.cogs.RaidReportContext',
+                      'src.cogs.RoleContext']
 
 
 class CustomBot(commands.Bot):
