@@ -67,7 +67,7 @@ def get_guild_members_by_role_name(interaction: discord.Interaction, role_name: 
 
 
 def get_role_by_name(interaction: discord.Interaction, role_name: str) -> discord.Role:
-    return discord.utils.get(interaction.message.server.roles, name=role_name)
+    return discord.utils.get(interaction.guild.roles, name=role_name)
 
 
 async def validate_bungie_name(interaction, bungie_name):
