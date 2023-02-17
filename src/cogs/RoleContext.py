@@ -60,6 +60,8 @@ class RoleContextCog(commands.Cog):
             for member in guild_members_to_cleanup:
                 await member.remove_roles(clan_score_role)
 
+        await interaction.followup.send('Success.')
+
     def load_clan_score_roles(self, interaction: discord.Interaction):
         if not self.clan_score_roles:
             for role_name in self.clan_score_role_names:
