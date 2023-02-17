@@ -8,7 +8,7 @@ from src.dao.InviteDao import send_invite
 from src.dao.MembershipIdDao import get_membership_id_and_membership_type
 from src.dao.OAuthTokenDao import get_oauth_token
 from src.enums.Clans import Clans
-from src.utils.GuildUtils import get_guild, get_member
+from src.utils.GuildUtils import get_member, get_guild_member_names
 
 
 class InviteCog(commands.Cog):
@@ -16,7 +16,7 @@ class InviteCog(commands.Cog):
         self.bot = bot
 
     async def bungie_name_autocomplete(self, interaction: discord.Interaction, current: str) -> List[app_commands.Choice[str]]:
-        guild_member_names = self.get_guild_member_names(interaction)
+        guild_member_names = get_guild_member_names(self.bot, interaction)
         return [
             app_commands.Choice(name=bungie_name, value=bungie_name)
             for bungie_name in guild_member_names if current.lower() in bungie_name.lower()
@@ -66,14 +66,6 @@ class InviteCog(commands.Cog):
         await interaction.followup.send('Invite successful', ephemeral=True)
         await interaction.channel.send(bungie_name + ' invited to ' + clan.name.capitalize() + ' by ' + interaction.user.display_name + '. Welcome to the clan!')
         return
-
-    def get_guild_member_names(self, interaction: discord.Interaction):
-        guild = get_guild(self.bot, interaction)
-        guild_member_names = []
-        for member in guild.members:
-            if member.nick is not None:
-                guild_member_names.append(member.nick)
-        return guild_member_names
 
 
 async def setup(bot):
