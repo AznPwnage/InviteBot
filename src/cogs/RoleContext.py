@@ -58,7 +58,7 @@ class RoleContextCog(commands.Cog):
             guild_members_with_score_role = get_guild_members_by_role(clan_score_role)
             guild_members_to_cleanup = (list(set(guild_members_with_score_role).difference(set(guild_members_with_clan_role))))
             for member in guild_members_to_cleanup:
-                member.remove_roles(clan_score_role)
+                await member.remove_roles(clan_score_role)
 
     def load_clan_score_roles(self, interaction: discord.Interaction):
         if not self.clan_score_roles:
