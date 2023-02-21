@@ -3,7 +3,7 @@ from typing import List
 import discord
 from discord.ext import commands
 
-from src.constants.Constants import BETA_GUILD_ID, DEV_GUILD_ID, REGISTERED_USER_ROLE_ID
+from src.constants.Constants import BETA_GUILD_ID, DEV_GUILD_ID, REGISTERED_USER_ROLE_NAME
 
 
 def get_guild_by_id(bot: commands.bot, guild_id: int):
@@ -18,7 +18,7 @@ def get_guild(bot: commands.bot, interaction: discord.Interaction):
 async def validate_user_roles(interaction: discord.Interaction, member):
     if is_prod_guild(interaction.guild_id):
         try:
-            if not is_registered_user(member.clan_score_role_names):
+            if not is_registered_user(member.roles):
                 await interaction.followup.send('User is not registered to Charlemagne.')
                 return
         except Exception:
@@ -28,11 +28,11 @@ async def validate_user_roles(interaction: discord.Interaction, member):
 
 
 def is_prod_guild(guild_id):
-    return guild_id != BETA_GUILD_ID and guild_id != DEV_GUILD_ID
+    return guild_id != DEV_GUILD_ID
 
 
 def is_registered_user(roles: List[discord.Role]):
-    return any(role.id == REGISTERED_USER_ROLE_ID for role in roles)
+    return any(role.name == REGISTERED_USER_ROLE_NAME for role in roles)
 
 
 def get_member(bot: commands.bot, interaction: discord.Interaction, bungie_name: str):
