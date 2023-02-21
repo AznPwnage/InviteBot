@@ -9,6 +9,7 @@ class Clans(Enum):
     jade = Clan('3892235', Region.NA)
     peridot = Clan('4381485', Region.NA)
     beryl = Clan('4381489', Region.NA)
+    olivine = Clan('4947412', Region.NA)
     ruby = Clan('3759206', Region.EU)
     garnet = Clan('3893809', Region.EU)
     thulite = Clan('4382110', Region.OCE)
