@@ -3,7 +3,7 @@ from typing import List
 import discord
 from discord.ext import commands
 
-from src.constants.Constants import BETA_GUILD_ID, DEV_GUILD_ID, REGISTERED_USER_ROLE_NAME
+from src.constants.Constants import DEV_GUILD_ID, REGISTERED_USER_ROLE_NAME
 
 
 def get_guild_by_id(bot: commands.bot, guild_id: int):
