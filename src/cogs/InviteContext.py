@@ -30,7 +30,10 @@ class InviteContextCog(commands.Cog):
         member = message.author
         bungie_name = member.nick
 
-        await validate_user_roles(interaction, member)
+        try:
+            await validate_user_roles(interaction, member)
+        except:
+            return
 
         try:
             division = self.extract_division(message)
@@ -38,7 +41,10 @@ class InviteContextCog(commands.Cog):
             await interaction.followup.send('No valid division or region name found in the message.')
             return
 
-        await validate_bungie_name(interaction, bungie_name)
+        try:
+            await validate_bungie_name(interaction, bungie_name)
+        except:
+            return
 
         clan = Clans[division]
 

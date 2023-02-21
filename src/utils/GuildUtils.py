@@ -77,5 +77,4 @@ async def validate_bungie_name(interaction, bungie_name):
             return
     except Exception:
         await interaction.followup.send('Error while validating bungie name.')
-        return
     return
