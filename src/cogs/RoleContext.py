@@ -28,6 +28,9 @@ class RoleContextCog(commands.Cog):
                            interaction: discord.Interaction,
                            message: discord.Message):
         await interaction.response.defer(ephemeral=True)
+        get_member_fail_count = 0
+        update_role_fail_count = 0
+        update_role_success_count = 0
 
         attachment_url = message.attachments[0].url
         file_request = requests.get(attachment_url)
@@ -35,14 +38,25 @@ class RoleContextCog(commands.Cog):
 
         reader = csv.reader(role_file, delimiter=',')
         for row in reader:
-            member = get_member(self.bot, interaction, row[0])
-            self.load_clan_score_roles(interaction)
-            for role in self.clan_score_roles:
-                await member.remove_roles(role)
-            role_to_add = discord.utils.get(interaction.guild.roles, name=row[1])
-            await member.add_roles(role_to_add)
+            try:
+                member = get_member(self.bot, interaction, row[0])
+            except Exception:
+                get_member_fail_count += 1
+                continue
 
-        await interaction.followup.send('Success.')
+            self.load_clan_score_roles(interaction)
+
+            try:
+                for role in self.clan_score_roles:
+                    await member.remove_roles(role)
+                role_to_add = discord.utils.get(interaction.guild.roles, name=row[1])
+                await member.add_roles(role_to_add)
+                update_role_success_count += 1
+            except Exception:
+                update_role_fail_count += 1
+                continue
+
+        await interaction.followup.send('Completed updating roles. Updated roles for ' + str(update_role_success_count) + ' members, failed to update roles for ' + str(update_role_fail_count) + ' members, failed to get object for ' + str(get_member_fail_count) + ' members.')
 
     @app_commands.command(
         name='cleanup',
@@ -51,16 +65,38 @@ class RoleContextCog(commands.Cog):
     async def cleanup(self,
                       interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
+        role_remove_fail_count = 0
+        role_remove_success_count = 0
 
-        guild_members_with_clan_role = get_guild_members_by_role_name(interaction, OBSIDIAN_WATCHERS_MEMBER_ROLE)
+        try:
+            guild_members_with_clan_role = get_guild_members_by_role_name(interaction, OBSIDIAN_WATCHERS_MEMBER_ROLE)
+        except Exception:
+            await interaction.followup.send('Failed to get guild members with clan score roles.')
+            return
+
         self.load_clan_score_roles(interaction)
-        for clan_score_role in self.clan_score_roles:
-            guild_members_with_score_role = get_guild_members_by_role(clan_score_role)
-            guild_members_to_cleanup = (list(set(guild_members_with_score_role).difference(set(guild_members_with_clan_role))))
-            for member in guild_members_to_cleanup:
-                await member.remove_roles(clan_score_role)
 
-        await interaction.followup.send('Success.')
+        for clan_score_role in self.clan_score_roles:
+            try:
+                guild_members_with_score_role = get_guild_members_by_role(clan_score_role)
+            except Exception:
+                await interaction.followup.send('Failed to get guild members by role.')
+                return
+
+            try:
+                guild_members_to_cleanup = (list(set(guild_members_with_score_role).difference(set(guild_members_with_clan_role))))
+            except Exception:
+                await interaction.followup.send('Failed to build list of guild members to clean up.')
+                return
+
+            for member in guild_members_to_cleanup:
+                try:
+                    await member.remove_roles(clan_score_role)
+                    role_remove_success_count += 1
+                except Exception:
+                    role_remove_fail_count += 1
+
+        await interaction.followup.send('Completed role cleanup. Removed roles for ' + str(role_remove_success_count) + ' members, failed to remove roles for ' + str(role_remove_fail_count) + ' members.')
 
     def load_clan_score_roles(self, interaction: discord.Interaction):
         if not self.clan_score_roles:
