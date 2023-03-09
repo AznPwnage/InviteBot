@@ -12,6 +12,7 @@ class Clans(Enum):
     olivine = Clan('4947412', Region.NA)
     ruby = Clan('3759206', Region.EU)
     garnet = Clan('3893809', Region.EU)
+    jasper = Clan('5027569', Region.EU)
     thulite = Clan('4382110', Region.OCE)
     onyx = Clan('3893887', Region.INT)
     diamond = Clan('4315576', Region.INT)
