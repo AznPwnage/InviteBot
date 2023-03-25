@@ -54,7 +54,7 @@ class InactiveContextCog(commands.Cog):
                     ' hours. If you joined the clan in the past week, let your region head know as you should be' \
                     ' exempt from this check.\n'
                 for member in v:
-                    message.append(member.mention + ', ')
+                    message = message + member.mention + ', '
                 message = message[-2]
 
                 interaction.channel.send(message)
