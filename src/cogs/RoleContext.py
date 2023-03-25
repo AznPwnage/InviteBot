@@ -7,7 +7,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from src.constants.Constants import OBSIDIAN_WATCHERS_MEMBER_ROLE
-from src.utils.GuildUtils import get_member, get_guild_members, get_guild_members_by_role, get_role_by_name, \
+from src.utils.GuildUtils import get_member, get_guild_members_by_role, get_role_by_name, \
     get_guild_members_by_role_name
 
 
@@ -56,7 +56,13 @@ class RoleContextCog(commands.Cog):
                 update_role_fail_count += 1
                 continue
 
-        await interaction.followup.send('Completed updating roles. Updated roles for ' + str(update_role_success_count) + ' members, failed to update roles for ' + str(update_role_fail_count) + ' members, failed to get object for ' + str(get_member_fail_count) + ' members.')
+        response_message = 'Completed updating roles. Updated roles for ' + str(update_role_success_count) + \
+                           ' members, failed to update roles for ' + str(update_role_fail_count) + \
+                           ' members, failed to get object for ' + str(get_member_fail_count) + ' members.'
+        if interaction.is_expired():
+            await interaction.channel.send(response_message)
+        else:
+            await interaction.followup.send(response_message)
 
     @app_commands.command(
         name='cleanup',
@@ -64,7 +70,6 @@ class RoleContextCog(commands.Cog):
     )
     async def cleanup(self,
                       interaction: discord.Interaction):
-        await interaction.response.defer(ephemeral=True)
         role_remove_fail_count = 0
         role_remove_success_count = 0
 
