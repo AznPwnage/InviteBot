@@ -60,3 +60,7 @@ class InactiveContextCog(commands.Cog):
                 interaction.channel.send(message)
         await interaction.followup.send('Success.')
         return
+
+
+async def setup(bot):
+    await bot.add_cog(InactiveContextCog(bot))
