@@ -44,7 +44,7 @@ class InactiveContextCog(commands.Cog):
             except Exception:
                 get_member_fail_count += 1
 
-        for k, v in inactive_members:
+        for k, v in inactive_members.items():
             clan = Clans[k.lower()]
             if clan.clan_type in self.activity_checks_by_clan_type.keys():
                 activity_check_message = self.activity_checks_by_clan_type[clan.clan_type]
