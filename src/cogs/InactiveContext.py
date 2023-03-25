@@ -55,7 +55,7 @@ class InactiveContextCog(commands.Cog):
                     ' exempt from this check.\n'
                 for member in v:
                     message = message + member.mention + ', '
-                message = message[-2]
+                message = message[:-2]
 
                 await interaction.channel.send(message)
         await interaction.followup.send('Success.')
