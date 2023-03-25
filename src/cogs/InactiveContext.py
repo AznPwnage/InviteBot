@@ -57,7 +57,7 @@ class InactiveContextCog(commands.Cog):
                     message = message + member.mention + ', '
                 message = message[-2]
 
-                interaction.channel.send(message)
+                await interaction.channel.send(message)
         await interaction.followup.send('Success.')
         return
 
