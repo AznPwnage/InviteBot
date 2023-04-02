@@ -8,6 +8,7 @@ from src.dao.InviteDao import send_invite
 from src.dao.MembershipIdDao import get_membership_id_and_membership_type
 from src.dao.OAuthTokenDao import get_oauth_token
 from src.enums.Clans import Clans
+from src.enums.MembershipTypes import MembershipTypes
 from src.utils.GuildUtils import get_member, get_guild_member_names
 
 
@@ -16,7 +17,7 @@ class InviteCog(commands.Cog):
         self.bot = bot
 
     async def bungie_name_autocomplete(self, interaction: discord.Interaction, current: str) -> List[app_commands.Choice[str]]:
-        guild_member_names = get_guild_member_names(self.bot, interaction)
+        guild_member_names = get_guild_member_names(self.bot, interaction)[:25]
         return [
             app_commands.Choice(name=bungie_name, value=bungie_name)
             for bungie_name in guild_member_names if current.lower() in bungie_name.lower()
@@ -27,14 +28,17 @@ class InviteCog(commands.Cog):
         description="Invite a user to the clan")
     @app_commands.describe(
         bungie_name="Bungie Name of the user to invite (include the # and numbers)",
+        membership_type="Platform",
         clan="Name of clan")
     @app_commands.rename(
-        bungie_name='bungie-name')
+        bungie_name='bungie-name',
+        membership_type='platform')
     @app_commands.autocomplete(bungie_name=bungie_name_autocomplete)
     async def invite(self,
                      interaction: discord.Interaction,
                      bungie_name: str,
-                     clan: Clans):
+                     clan: Clans,
+                     membership_type: MembershipTypes = None):
         """Invite a user to the clan"""
         await interaction.response.defer(ephemeral=True)
         try:
@@ -44,13 +48,16 @@ class InviteCog(commands.Cog):
             return
 
         try:
-            membership_id, membership_type = get_membership_id_and_membership_type(bungie_name)
+            membership_id, membership_type_from_profile = get_membership_id_and_membership_type(bungie_name)
         except Exception:
             await interaction.followup.send('Unable to find membership id & membership type for ' + bungie_name + '.')
             return
 
         try:
-            send_invite(membership_type, membership_id, clan.value.group_id, oauth_token.access_token)
+            send_invite(membership_type.value if membership_type else membership_type_from_profile,
+                        membership_id,
+                        clan.value.group_id,
+                        oauth_token.access_token)
         except Exception:
             await interaction.followup.send('Unable to send invite to ' + bungie_name + ' for ' + clan.name + '.')
             return
