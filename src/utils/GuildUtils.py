@@ -15,6 +15,11 @@ def get_guild(bot: commands.bot, interaction: discord.Interaction):
     return get_guild_by_id(bot, guild_id)
 
 
+def get_channel_by_name(bot: commands.bot, interaction: discord.Interaction, name):
+    guild = get_guild(bot, interaction)
+    return discord.utils.get(guild.channels, name=name)
+
+
 async def validate_user_roles(interaction: discord.Interaction, member):
     if is_prod_guild(interaction.guild_id):
         try:

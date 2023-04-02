@@ -6,10 +6,11 @@ import requests
 from discord import app_commands
 from discord.ext import commands
 
+from src.constants.Constants import INACTIVE_NOTIFICATION_CHANNEL_NAME
 from src.enums.ClanType import ClanType
 from src.enums.Clans import Clans
 from src.utils.DictUtils import append_obj_to_value_if_key_exists
-from src.utils.GuildUtils import get_member
+from src.utils.GuildUtils import get_member, get_channel_by_name
 
 
 class InactiveContextCog(commands.Cog):
@@ -57,7 +58,8 @@ class InactiveContextCog(commands.Cog):
                     message = message + member.mention + ', '
                 message = message[:-2]
 
-                await interaction.channel.send(message)
+                channel = get_channel_by_name(self.bot, interaction, INACTIVE_NOTIFICATION_CHANNEL_NAME)
+                await channel.send(message)
         await interaction.followup.send('Success.')
         return
 
