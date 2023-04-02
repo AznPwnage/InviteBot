@@ -1,5 +1,6 @@
 import csv
 from io import StringIO
+import pandas as pd
 
 import discord
 import requests
@@ -13,6 +14,7 @@ from src.utils.GuildUtils import get_member, get_guild_members_by_role, get_role
 
 class RoleContextCog(commands.Cog):
     clan_score_roles = []
+    clan_score_roles_by_name = {}
     with open('src/constants/ClanRoles.txt') as file:
         clan_score_role_names = [line.rstrip() for line in file]
 
@@ -28,6 +30,7 @@ class RoleContextCog(commands.Cog):
                            interaction: discord.Interaction,
                            message: discord.Message):
         await interaction.response.defer(ephemeral=True)
+
         get_member_fail_count = 0
         update_role_fail_count = 0
         update_role_success_count = 0
@@ -36,25 +39,21 @@ class RoleContextCog(commands.Cog):
         file_request = requests.get(attachment_url)
         role_file = StringIO(file_request.text)
 
-        reader = csv.reader(role_file, delimiter=',')
-        for row in reader:
-            try:
-                member = get_member(self.bot, interaction, row[0])
-            except Exception:
-                get_member_fail_count += 1
-                continue
+        guild_members_with_clan_role = get_guild_members_by_role_name(interaction, OBSIDIAN_WATCHERS_MEMBER_ROLE)
+        df = pd.read_csv(role_file, usecols=['nick', 'role'])
 
-            self.load_clan_score_roles(interaction)
+        self.load_clan_score_roles(interaction)
+        for clan_score_role in self.clan_score_roles:
+            guild_members_with_score_role = get_guild_members_by_role(clan_score_role)
 
-            try:
-                for role in self.clan_score_roles:
-                    await member.remove_roles(role)
-                role_to_add = discord.utils.get(interaction.guild.roles, name=row[1])
-                await member.add_roles(role_to_add)
-                update_role_success_count += 1
-            except Exception:
-                update_role_fail_count += 1
-                continue
+            for member in guild_members_with_score_role:
+                if member in guild_members_with_clan_role:
+                    row = df.loc[df['nick'] == member.nick]
+                    if row and row['role'] != clan_score_role.name:
+                        await member.remove_roles(clan_score_role)
+                        await member.add_roles(self.clan_score_roles_by_name[row['role']])
+                else:
+                    await member.remove_roles(clan_score_role)
 
         response_message = 'Completed updating roles. Updated roles for ' + str(update_role_success_count) + \
                            ' members, failed to update roles for ' + str(update_role_fail_count) + \
@@ -109,6 +108,7 @@ class RoleContextCog(commands.Cog):
                 role = get_role_by_name(interaction, role_name)
                 if role is not None:
                     self.clan_score_roles.append(role)
+                    self.clan_score_roles_by_name[role.name] = role
 
 
 async def setup(bot):
