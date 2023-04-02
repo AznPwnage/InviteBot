@@ -49,10 +49,11 @@ class RoleContextCog(commands.Cog):
 
             for member in guild_members_with_score_role:
                 if member in guild_members_with_clan_role:
-                    row = df.loc[df['nick'] == member.nick]
-                    if not row.empty and row['role'] != clan_score_role.name:
-                        await member.remove_roles(clan_score_role)
-                        await member.add_roles(self.clan_score_roles_by_name[row['role']])
+                    if member.nick in df['nick']:
+                        row = df.loc[df['nick'] == member.nick]
+                        if row['role'] != clan_score_role.name:
+                            await member.remove_roles(clan_score_role)
+                            await member.add_roles(self.clan_score_roles_by_name[row['role']])
                 else:
                     await member.remove_roles(clan_score_role)
 
