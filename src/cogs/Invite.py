@@ -54,7 +54,7 @@ class InviteCog(commands.Cog):
             return
 
         try:
-            send_invite(membership_type.value if membership_type else membership_type_from_profile,
+            send_invite(membership_type.value.code if membership_type else membership_type_from_profile,
                         membership_id,
                         clan.value.group_id,
                         oauth_token.access_token)
