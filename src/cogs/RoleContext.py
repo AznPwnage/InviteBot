@@ -40,7 +40,8 @@ class RoleContextCog(commands.Cog):
         role_file = StringIO(file_request.text)
 
         guild_members_with_clan_role = get_guild_members_by_role_name(interaction, OBSIDIAN_WATCHERS_MEMBER_ROLE)
-        df = pd.read_csv(role_file)
+        df = pd.read_csv(role_file, header=None)
+        df.columns = ['nick', 'role']
 
         self.load_clan_score_roles(interaction)
         for clan_score_role in self.clan_score_roles:
@@ -48,10 +49,10 @@ class RoleContextCog(commands.Cog):
 
             for member in guild_members_with_score_role:
                 if member in guild_members_with_clan_role:
-                    row = df.loc[df.iloc[:, 0] == member.nick]
-                    if not row.empty and row[1] != clan_score_role.name:
+                    row = df.loc[df['nick'] == member.nick]
+                    if not row.empty and row['role'] != clan_score_role.name:
                         await member.remove_roles(clan_score_role)
-                        await member.add_roles(self.clan_score_roles_by_name[row[1]])
+                        await member.add_roles(self.clan_score_roles_by_name[row['role']])
                 else:
                     await member.remove_roles(clan_score_role)
 
