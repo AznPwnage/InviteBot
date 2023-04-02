@@ -31,9 +31,9 @@ class RoleContextCog(commands.Cog):
                            message: discord.Message):
         await interaction.response.defer(ephemeral=True)
 
-        get_member_fail_count = 0
         update_role_fail_count = 0
         update_role_success_count = 0
+        clean_up_success_count = 0
 
         attachment_url = message.attachments[0].url
         file_request = requests.get(attachment_url)
@@ -52,14 +52,19 @@ class RoleContextCog(commands.Cog):
                     if member.nick in df['nick'].values:
                         new_role_name = str(df[df['nick'] == member.nick].role.item()).strip()
                         if new_role_name != clan_score_role.name:
-                            await member.remove_roles(clan_score_role)
-                            await member.add_roles(self.clan_score_roles_by_name[new_role_name])
+                            try:
+                                await member.remove_roles(clan_score_role)
+                                await member.add_roles(self.clan_score_roles_by_name[new_role_name])
+                                update_role_success_count += 1
+                            except Exception:
+                                update_role_fail_count += 1
                 else:
                     await member.remove_roles(clan_score_role)
+                    clean_up_success_count += 1
 
         response_message = 'Completed updating roles. Updated roles for ' + str(update_role_success_count) + \
                            ' members, failed to update roles for ' + str(update_role_fail_count) + \
-                           ' members, failed to get object for ' + str(get_member_fail_count) + ' members.'
+                           ' members, removed score roles for ' + str(clean_up_success_count) + ' members.'
         if interaction.is_expired():
             await interaction.channel.send(response_message)
         else:
