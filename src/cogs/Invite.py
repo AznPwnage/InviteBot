@@ -17,11 +17,11 @@ class InviteCog(commands.Cog):
         self.bot = bot
 
     async def bungie_name_autocomplete(self, interaction: discord.Interaction, current: str) -> List[app_commands.Choice[str]]:
-        guild_member_names = get_guild_member_names(self.bot, interaction)[:25]
+        guild_member_names = get_guild_member_names(self.bot, interaction)
         return [
             app_commands.Choice(name=bungie_name, value=bungie_name)
             for bungie_name in guild_member_names if current.lower() in bungie_name.lower()
-        ]
+            ][:25]
 
     @app_commands.command(
         name="invite",
