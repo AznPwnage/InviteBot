@@ -65,7 +65,7 @@ class InviteCog(commands.Cog):
         try:
             member = get_member(self.bot, interaction, bungie_name)
             await interaction.followup.send('Invite successful', ephemeral=True)
-            await interaction.channel.send(member.mention + ' invited to ' + clan.name.capitalize() + ' by ' + interaction.user.display_name + '. Welcome to the clan!')
+            await interaction.channel.send(member.mention + ' (bgn: ' + bungie_name + ') invited to ' + clan.name.capitalize() + ' by ' + interaction.user.display_name + '. Welcome to the clan!')
             return
         except Exception:
             print('Unable to find user by server nickname.')
