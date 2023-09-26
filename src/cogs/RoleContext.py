@@ -48,6 +48,7 @@ class RoleContextCog(commands.Cog):
             guild_members_with_score_role = get_guild_members_by_role(clan_score_role)
 
             for member in guild_members_with_score_role:
+                print(member.nick)
                 if member in guild_members_with_clan_role:
                     if member.nick in df['nick'].values:
                         new_role_name = str(df[df['nick'] == member.nick].role.item()).strip()
@@ -59,8 +60,11 @@ class RoleContextCog(commands.Cog):
                             except Exception:
                                 update_role_fail_count += 1
                 else:
-                    await member.remove_roles(clan_score_role)
-                    clean_up_success_count += 1
+                    try:
+                        await member.remove_roles(clan_score_role)
+                        clean_up_success_count += 1
+                    except Exception:
+                        update_role_fail_count += 1
 
         response_message = 'Completed updating roles. Updated roles for ' + str(update_role_success_count) + \
                            ' members, failed to update roles for ' + str(update_role_fail_count) + \
