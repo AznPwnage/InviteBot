@@ -22,7 +22,7 @@ class PurgeCog(commands.Cog):
         fail_count = 0
 
         try:
-            guild_members = get_guild_members(interaction)
+            guild_members = get_guild_members(self.bot, interaction)
         except Exception:
             await interaction.followup.send('Failed to get server member role list')
             return
