@@ -3,7 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from src.constants.Constants import OBSIDIAN_WATCHERS_MEMBER_ROLE, SERVER_MEMBER_ROLE, PURGE_SURVIVOR_ROLE
-from src.utils.GuildUtils import get_guild_members_by_role_name
+from src.utils.GuildUtils import get_guild_members, get_guild_members_by_role_name
 
 
 class PurgeCog(commands.Cog):
@@ -22,7 +22,7 @@ class PurgeCog(commands.Cog):
         fail_count = 0
 
         try:
-            guild_members_with_server_member_role = get_guild_members_by_role_name(interaction, SERVER_MEMBER_ROLE)
+            guild_members = get_guild_members(interaction)
         except Exception:
             await interaction.followup.send('Failed to get server member role list')
             return
@@ -42,7 +42,7 @@ class PurgeCog(commands.Cog):
 
         try:
             guild_members_to_purge = (list(
-                set(guild_members_with_server_member_role).difference(set(guild_members_with_purge_survivor_role))))
+                set(guild_members).difference(set(guild_members_with_purge_survivor_role))))
         except Exception:
             await interaction.followup.send('Failed to remove purge survivors')
             return
@@ -56,7 +56,7 @@ class PurgeCog(commands.Cog):
 
         for member in guild_members_to_purge:
             try:
-                await member.kick('Purge')
+                await member.kick()
                 success_count += 1
             except Exception:
                 fail_count += 1
