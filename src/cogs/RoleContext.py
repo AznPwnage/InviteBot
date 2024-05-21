@@ -113,54 +113,6 @@ class RoleContextCog(commands.Cog):
 
         await interaction.followup.send('Completed role cleanup. Removed roles for ' + str(role_remove_success_count) + ' members, failed to remove roles for ' + str(role_remove_fail_count) + ' members.')
 
-        @app_commands.command(
-            name='purge',
-            description='Scans server members and kicks members lacking certain roles'
-        )
-        async def purge(self,
-                        interaction: discord.Interaction):
-            success_count = 0
-            fail_count = 0
-
-            try:
-                guild_members_with_server_member_role = get_guild_members_by_role_name(interaction, SERVER_MEMBER_ROLE)
-            except Exception:
-                await interaction.followup.send('Failed to get server member role list')
-                return
-
-            try:
-                guild_members_with_purge_survivor_role = get_guild_members_by_role_name(interaction, PURGE_SURVIVOR_ROLE)
-            except Exception:
-                await interaction.followup.send('Failed to get purge survivor member role list')
-                return
-
-            try:
-                guild_members_with_clan_member_role = get_guild_members_by_role_name(interaction, OBSIDIAN_WATCHERS_MEMBER_ROLE)
-            except Exception:
-                await interaction.followup.send('Failed to get clan member role list')
-                return
-
-            try:
-                guild_members_to_purge = (list(set(guild_members_with_server_member_role).difference(set(guild_members_with_purge_survivor_role))))
-            except Exception:
-                await interaction.followup.send('Failed to remove purge survivors')
-                return
-
-            try:
-                guild_members_to_purge = (list(set(guild_members_to_purge).difference(set(guild_members_with_clan_member_role))))
-            except Exception:
-                await interaction.followup.send('Failed to remove clan members')
-                return
-
-            for member in guild_members_to_purge:
-                try:
-                    await member.kick('Purge')
-                    success_count += 1
-                except Exception:
-                    fail_count += 1
-
-            await interaction.followup.send('Completed purge. Kicked ' + str(success_count) + ' members, failed to kick ' + str(fail_count) + ' members.')
-
     def load_clan_score_roles(self, interaction: discord.Interaction):
         if not self.clan_score_roles:
             for role_name in self.clan_score_role_names:
